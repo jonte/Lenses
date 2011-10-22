@@ -1,0 +1,57 @@
+<head>
+<style>
+    tr { white-space: nowrap; }
+    input, textarea {
+        padding: 9px;
+        border: solid 1px #E5E5E5;
+        outline: 0;
+        font: normal 13px/100% Verdana, Tahoma, sans-serif;
+        width: 200px;
+        background: #FFFFFF;
+    }
+
+    
+</style>
+<script>
+window.addEventListener('DOMContentLoaded', testRequest, false);
+
+function setChildTextNode(elementId, text) {
+  document.getElementById(elementId).value = text;
+}
+
+// Tests the roundtrip time of sendRequest().
+function testRequest() {
+  chrome.tabs.getSelected(null, function(tab) {
+
+    chrome.tabs.sendRequest(tab.id, {counter: 1}, function handler(response) {
+        setChildTextNode("normal", response.data);
+        setChildTextNode("b64", window.btoa(response.data));
+        setChildTextNode("length", response.data.length);
+        setChildTextNode("b64_decode", window.atob(response.data));
+    });
+  });
+}
+
+</script>
+</head>
+<body>
+<!-- a href="javascript:testRequest">Fetch data</a-->
+<table>
+    <tr>
+        <th>Selected text</th>
+        <th>Base64 encoded</th>
+        <th>Length</th>
+    </tr>
+  <tr>
+    <td><input class='convField' type="text" id="normal"></td>
+    <td><input class='convField' type="text" id="b64"></td>
+    <td><input class='convField' type="text" id="length"></td>
+  </tr>
+    <tr>
+        <th>Base64 decoded</th>
+    </tr>
+    <tr>
+        <td><input type="text" id="b64_decode"></td>
+    </tr>
+</table>
+</body>
